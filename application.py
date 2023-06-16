@@ -4,6 +4,10 @@ from flask import Flask, request, render_template
 
 app = Flask(__name__, static_folder="static")
 
+@app.route('/')
+def hello_world():
+    return 'Hello, World!'
+
 global OPEN_AI_KEY
 OPEN_AI_KEY = "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"
 
