@@ -4,20 +4,21 @@ from flask import Flask, request, render_template
 
 app = Flask(__name__, static_folder="static")
 
-@app.route('/')
-def hello_world():
-    return 'Hello, World!'
-
 global OPEN_AI_KEY
 OPEN_AI_KEY = "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"
 
+
 localDomain = "http://localhost:5000"
-publicDomain = "http://www.gtxr.club"
+publicDomain = "http://partharora1105.pythonanywhere.com/"
 DOMAIN = localDomain
 
 localPath = ""
-publicPath = "/home/GTXR/mysite/"
+publicPath = "/home/partharora1105/mysite/"
 PATH = localPath
+
+@app.route('/')
+def hello_world():
+    return 'Hello, World!'
 
 def checkList(currChat):
     instruction = "Based on the following converstation, return a comma seperarted list of the people" \
@@ -176,7 +177,7 @@ def gpt(currChat, input):
     print(prompt)
     return currChat
 
-
-if __name__ == '__main__':
-    app.debug = True
-    app.run()
+if DOMAIN != publicDomain:
+    if __name__ == '__main__':
+        app.debug = True
+        app.run()
