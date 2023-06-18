@@ -21,24 +21,28 @@ def hello_world():
     return 'Hello, World!'
 
 def checkList(currChat):
-    instruction = "Based on the following converstation, return a comma seperarted list of the people" \
-                  "interacted with just the list nothing else" \
-                  ", if you didn't find any, return 'NO'"
-    prompt = instruction
-    for i in range(len(currChat)):
-        if i % 2 == 0:
-            prompt += f"Bot : {currChat[i]}\n"
-        else:
-            prompt += f"User : {currChat[i]}\n"
+    message = currChat[-1].lower()
+    if "no" in message or "na" in message:
+        return "No"
+    if "yes" in message or "yeah" in message or "yup" in message:
+        return "Yes"
+    prompt = f"Can you create a list of people Anthony spoke with today based on what he says, if yes, return a comma" \
+                  " seperated list in an array [],  return only list, if not return 'Null', nothing else \n Anthony : " \
+                  f"{message}"
     openai.api_key = OPEN_AI_KEY
     chat_completion = openai.ChatCompletion.create(model="gpt-3.5-turbo",
                                                    messages=[{"role": "user", "content": prompt}])
-    gptOutput = chat_completion["choices"][0]["message"]["content"]
+    gptOutput = chat_completion["choices"][0]["message"]["content"].lower()
     print(gptOutput)
-    if "NO" in gptOutput:
-        return None
+    if "[" in gptOutput and "]" in gptOutput:
+        try:
+            l = gptOutput.split("[")[1].split("]")[0].split(",")
+        except:
+            return "null"
+        return [s.strip("\"").strip("\'") for s in l]
     else:
-        return gptOutput.split(",")
+        return "null"
+
 
 def quest(userText, chatData, id, data, person, json_file, currKey, nextKey, question):
     interactions = data[id]["current"]["interactions"]
@@ -71,35 +75,47 @@ def chat(id):
     # Load First Page
     if (len(chatData) <= 1):
         # Initialize
-        firstQuest = f"Did you have any opportunities to interact with {data[id]['opposite']} " \
-                     f"people today, like by talking to or hanging out with them? "
+        firstQuest = f"Did you have any opportunities to interact with" \
+                     f"anyone today, like by talking to or hanging out with them? "
         chatData = [firstQuest]
         data[id]["current"]["chat"] = chatData
         with open(json_file, 'w') as file:
             json.dump(data, file, indent=4)
-        print("ayo")
         return render_template('chat.html', totalMessages=len(chatData), chatList=chatData, session=0, id=id, domain=DOMAIN)
 
 
-    print("no")
     # If No Interactions
     if len(data[id]["current"]["interactions"]) == 0:
-        interactionList = checkList(chatData)
-        if interactionList:
-            data[id]["current"]["interactions"] = {person: {'started': ""} for person in interactionList}
+        interactions = checkList(chatData)
+        if type(interactions) == list:
+            data[id]["current"]["interactions"] = {person: {'started': ""} for person in interactions}
         else:
-            if len(chatData) == 2:
-                chatData.append("Okay, what about anyone outside of your family? Like customers or family friends?")
+            if interactions == "Yes":
+                chatData.append("Can you please list who all you interacted with?")
                 data[id]["current"]["chat"] = chatData
-            elif len(chatData) == 4:
-                chatData.append("What about people in your family or roommates?")
-                data[id]["current"]["chat"] = chatData
+            elif interactions == "No":
+                q1 = "Okay, what about anyone outside of your family? Like customers or family friends?"
+                q2 = "What about people in your family or roommates?"
+                q3 = "Thank You, since you didn't have any interactions today" \
+                     " this conversation has ended"
+                if q1 not in chatData:
+                    chatData.append(q1)
+                    data[id]["current"]["chat"] = chatData
+                elif q2 not in chatData:
+                    chatData.append(q2)
+                    data[id]["current"]["chat"] = chatData
+                else:
+                    chatData.append(q3)
+                    data[id]["current"]["chat"] = chatData
+                    data[id]["conversations"].append(data[id]["current"])
+                    data[id]["current"] = {"interactions": {}, "chat": [], "data": {}}
+                    with open(json_file, 'w') as file:
+                        json.dump(data, file, indent=4)
+                    return q3
             else:
-                chatData.append("Thank You, since you didn't have any interactions, this "
-                                "conversation has ended")
+                chatData.append("Sorry I don't understand, please list the people you spoke with today.")
                 data[id]["current"]["chat"] = chatData
-                data[id]["conversations"].append(data[id]["current"])
-                data[id]["current"] = {"interactions": {}, "chat": [], "data": {}}
+
             with open(json_file, 'w') as file:
                 json.dump(data, file, indent=4)
             return render_template('chat.html', totalMessages=len(chatData), chatList=chatData, session=0, id=id, domain=DOMAIN)
@@ -123,11 +139,13 @@ def chat(id):
         if (interactions[person][keys[7]] == "" and interactions[person][keys[6]] != ""):
             interactions[person][keys[7]] = userText
 
-    final = "Okay, that gives me a good idea of what you did today. " \
-            "Thanks for sharing your interactions with me. If there are" \
-            "any other interactions you would like to log, you may refresh" \
-            "the page and restart the conversation. Have a good rest of " \
-            "your day"
+    # final = "Okay, that gives me a good idea of what you did today. " \
+    #         "Thanks for sharing your interactions with me. If there are" \
+    #         "any other interactions you would like to log, you may refresh" \
+    #         "the page and restart the conversation. Have a good rest of " \
+    #         "your day"
+    final = "Thank You, your interactions have been logged and" \
+         " this conversation has ended"
     chatData.append(final)
     data[id]["current"]["chat"] = chatData
     #Restart
@@ -135,6 +153,7 @@ def chat(id):
     data[id]["current"] = {"interactions": {}, "chat": [], "data": {}}
     with open(json_file, 'w') as file:
         json.dump(data, file, indent=4)
+    return final
     return render_template('chat.html', totalMessages=len(chatData), chatList=chatData, session=0, id=id, domain=DOMAIN)
 
 @app.route('/chat/admin/data',methods = ['POST', 'GET'])
