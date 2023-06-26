@@ -29,9 +29,7 @@ def setData(data):
         json.dump(data, file, indent=4)
 
 
-def getInput():
-    textData = request.form["message"]  ## add try except, two side func too
-    return textData
+
 
 
 def checkSize(input):
@@ -47,8 +45,7 @@ def checkYes(input):
         return None
 
 
-def typicalQuest(data, key, nextQuest, enableCheckSize = True):
-    val = getInput()
+def typicalQuest(data, key, nextQuest, val, enableCheckSize = True):
     if enableCheckSize and not checkSize(val):
         data["text"].append(f"Can you elaborate?")
     else:
@@ -67,7 +64,10 @@ def chat(id):
                             "like by talking to or hanging out with them? 'Yes' or 'No'")
         data["vals"]["isStarted"] = True
     else:
-        userText = getInput()
+        try:
+            userText = request.form["message"]
+        except:
+            userText = "Refreshed Page"
         data["text"].append(userText)
         if "isInteracted-one" not in data["vals"]:
             isYes = checkYes(userText)
@@ -128,7 +128,7 @@ def chat(id):
                                         " what you call them) you interacted with: ")
 
         elif "feeling" not in data['vals']:
-            val = getInput()
+            val = userText
             if checkSize(val):
                 if "because" in val:
                     split = val.split("because")
@@ -145,16 +145,19 @@ def chat(id):
         elif "feeling-why" not in data['vals']:
             data = typicalQuest(data=data, key="feeling-why",
                                 nextQuest=f"What was the best part of "
-                                          f"interacting with {data['vals']['name']}?")
+                                          f"interacting with {data['vals']['name']}?",
+                                          val=userText)
         elif "best-part" not in data['vals']:
             data = typicalQuest(data=data, key="best-part",
                                 nextQuest=f"What was the hardest part of "
-                                          f"interacting with {data['vals']['name']}?")
+                                          f"interacting with {data['vals']['name']}?",
+                                          val=userText)
         elif "hardest-part" not in data['vals']:
             data = typicalQuest(data=data, key="hardest-part",
                                 nextQuest=f"Do you wish that the {data['vals']['name']} "
                                           f"had done anything differently? Answer"
                                           f"'Yes' or 'No'.",
+                                          val=userText,
                                         enableCheckSize= False)
         elif "opp-done-diff" not in data['vals']:
             isYes = checkYes(userText)
@@ -164,16 +167,19 @@ def chat(id):
                 if isYes:
                     data = typicalQuest(data=data, key="opp-done-diff",
                                         nextQuest=f"What do you think they should have done differently?",
+                                          val=userText,
                                         enableCheckSize= False)
                 else:
                     data = typicalQuest(data=data, key="opp-done-diff",
                                         nextQuest=f"Do you wish that you had done anything differently?"
                                                   f" Answer 'Yes' or 'No'.",
+                                          val=userText,
                                         enableCheckSize= False)
                     data["vals"]["opp-done-diff-details"] = "NA"
         elif "opp-done-diff-details" not in data['vals']:
             data = typicalQuest(data=data, key="opp-done-diff-details",
                                 nextQuest=f"Do you wish that you had done anything differently?",
+                                          val=userText,
                                         enableCheckSize= False)
         elif "self-done-diff" not in data['vals']:
             isYes = checkYes(userText)
@@ -183,12 +189,14 @@ def chat(id):
                 if isYes:
                     data = typicalQuest(data=data, key="self-done-diff",
                                         nextQuest=f"What do you think you should have done differently?",
+                                          val=userText,
                                         enableCheckSize= False)
                 else:
                     data = typicalQuest(data=data, key="self-done-diff",
                                         nextQuest=f"Do you think you would want to interact"
                                                   f" with {data['vals']['name']} again? Answer"
                                                   f" 'Yes' or 'No'.",
+                                          val=userText,
                                         enableCheckSize= False)
                     data["vals"]["self-done-diff-details"] = "NA"
         elif "self-done-diff-details" not in data['vals']:
@@ -196,10 +204,12 @@ def chat(id):
                                 nextQuest=f"Do you think you would want to interact"
                                           f" with {data['vals']['name']} again? Answer"
                                           f" 'Yes' or 'No'.",
+                                          val=userText,
                                         enableCheckSize= False)
         elif "interact-again" not in data['vals']:
             data = typicalQuest(data=data, key="interact-again",
                                 nextQuest=f"Why is that?",
+                                          val=userText,
                                         enableCheckSize= False)
         elif "interact-again-detail" not in data['vals']:
             data["vals"]["interact-again-detail"] = userText

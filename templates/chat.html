@@ -38,7 +38,7 @@
 
          	<form  action = "{{domain}}/chat/{{id}}"   method = "post">
          <div>
-         	<input class="sendMessage" type="text" name="message">
+         	<input class="sendMessage" id="output" type="text" name="message">
         	<input class="sendMessageButton"  type="submit" name="" value=">" onclick="updateScroll()">
          </div>
             <input style="display: none;" type="text" name="session" value="{{ session }}">
@@ -46,8 +46,20 @@
             
          </form>
          </div>
+
+
+         <div class="speaker">
+          <p id="action" style="color: grey;font-weight: 800; padding: 0; padding-left: 2rem;"></p>
+          <button class="speechButton" onclick="runSpeechRecog()">
+             Speak
+          </button>
+       </div>
+
+
+
         
   </div>
+
       
     
 
@@ -60,6 +72,21 @@
     var element = document.getElementById("chatPrev");
     element.scrollTop = element.scrollHeight;
   }
+  runSpeechRecog = () => {
+            var output = document.getElementById('output');
+            var action = document.getElementById('action');
+            let recognization = new webkitSpeechRecognition();
+            recognization.onstart = () => {
+               action.innerHTML = "Listening...";
+            }
+            recognization.onresult = (e) => {
+               var transcript = e.results[0][0].transcript;
+               output.value = output.value+ " " +transcript;
+               output.classList.remove("hide")
+               action.innerHTML = "";
+            }
+            recognization.start();
+         }
 </script>
 
 

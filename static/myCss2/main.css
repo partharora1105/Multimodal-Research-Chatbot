@@ -172,7 +172,7 @@ font-size: 20px
 
 .sendMessage{
 
-	width: 80%;
+	width: 85%;
 	display: inline;
 	font-size: 14px;
 	background-color: white;
@@ -195,8 +195,20 @@ font-size: 20px
 	border-radius: 6px;
 }
 
+.speechButton{
+	width: 100%;
+	margin-top: 15px;
+	padding:1.2% 0;
+	margin-bottom: 4%;
+	display: inline;
+	background-color: white;
+	border: 0;
+	box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%);
+	border-radius: 6px;
+}
+
 .chatPrev{
-	height: 60vh;
+	height: 50vh;
     overflow: scroll;
 }
 
