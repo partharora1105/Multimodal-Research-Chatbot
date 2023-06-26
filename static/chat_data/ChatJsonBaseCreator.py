@@ -10,13 +10,11 @@ def create():
     for id,type in given.items():
         data[id] = {
         "type": type,
-        "opposite" : "neurotypical" if type == "ND" else "neurodiverse",
-        "current": {
-            "interactions": {},
-            "chat": [],
-            "data": {}
+        "chat": {
+            "vals": {},
+            "text": [],
         },
-        "conversations": []
+        "data": []
     }
     with open("data.json", 'w') as file:
         json.dump(data, file, indent=4)

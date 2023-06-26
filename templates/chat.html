@@ -17,11 +17,12 @@
   <body>
 
 	<div class="container-fluid chatBox">
-		<div>
+
 
         <div class="chatHeader">
         	<p>My Daily Diary</p>
         </div>
+        <div class="chatPrev" id="chatPrev">
           
         {% for i in range(totalMessages) %}
           {% if (i % 2) != 0%}
@@ -30,14 +31,15 @@
             <div class="message receive">{{ chatList[i] }}</div>
           {% endif %}
         {% endfor %}
+      </div>
 
-    </div>
+
          <div>
 
          	<form  action = "{{domain}}/chat/{{id}}"   method = "post">
          <div>
          	<input class="sendMessage" type="text" name="message">
-        	<input class="sendMessageButton" type="submit" name="" value=">">
+        	<input class="sendMessageButton"  type="submit" name="" value=">" onclick="updateScroll()">
          </div>
             <input style="display: none;" type="text" name="session" value="{{ session }}">
             <!-- <input style="display: none;"type="text" name="receiver" value="{{ receiver }}"> -->
@@ -52,7 +54,12 @@
 
 
 <script type="text/javascript">
- 
+  console.log("test")
+  updateScroll()
+  function updateScroll(){
+    var element = document.getElementById("chatPrev");
+    element.scrollTop = element.scrollHeight;
+  }
 </script>
 
 

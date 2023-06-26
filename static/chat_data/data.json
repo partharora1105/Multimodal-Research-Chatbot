@@ -1,44 +1,34 @@
 {
     "111111": {
         "type": "ND",
-        "opposite": "neurotypical",
-        "current": {
-            "interactions": {},
-            "chat": [
-                "Did you have any opportunities to interact with neurotypical people today, like by talking to or hanging out with them? "
-            ],
-            "data": {}
+        "chat": {
+            "vals": {},
+            "text": []
         },
-        "conversations": []
+        "data": []
     },
     "222222": {
         "type": "ND",
-        "opposite": "neurotypical",
-        "current": {
-            "interactions": {},
-            "chat": [],
-            "data": {}
+        "chat": {
+            "vals": {},
+            "text": []
         },
-        "conversations": []
+        "data": []
     },
     "333333": {
         "type": "ND",
-        "opposite": "neurotypical",
-        "current": {
-            "interactions": {},
-            "chat": [],
-            "data": {}
+        "chat": {
+            "vals": {},
+            "text": []
         },
-        "conversations": []
+        "data": []
     },
     "444444": {
         "type": "ND",
-        "opposite": "neurotypical",
-        "current": {
-            "interactions": {},
-            "chat": [],
-            "data": {}
+        "chat": {
+            "vals": {},
+            "text": []
         },
-        "conversations": []
+        "data": []
     }
 }
