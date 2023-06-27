@@ -1,5 +1,5 @@
-<h1>Chatting App</h1>
-A basic chatting app build on Python Flask to chat securly with peers on the web on any device.
+<h1>Research Survey Chatbot</h1>
+A Multimodal Chatbot (Voice+Text) built to collect data from neurodiverse students about the interactions they had.
 <h2>Setup</h2>
 <ul>
 	<li>Make sure you have python version 3 or higher</li>
@@ -8,10 +8,9 @@ A basic chatting app build on Python Flask to chat securly with peers on the web
 <h2>Installation</h2>
 <ul>
 	<li>Download the repository to your local machine</li>
-	<li>Open application.py</li>
+	<li>Open flask_app.py</li>
 	<li>Run the python file</li>
-	<li>Open your browser to <a href="http://localhost:5000/chat/home">localhost:5000/chat/home</a> </li>
-	<li>Create your account an hop in</li>
+	<li>Open your browser to <a href="http://localhost:5000/chat/home">localhost:5000/chat/{id}</a> where id is a 6 digit code, for demo you can use 111111</li>
 </ul>
 <h2>Media</h2>
 <p align="center">
