@@ -14,11 +14,6 @@ A Multimodal Chatbot (Voice+Text) built to collect data from neurodiverse studen
 </ul>
 <h2>Media</h2>
 <p align="center">
-  <img src="/github/img2.png">
-  <br>Chat
-</p>
-<p align="center">
-  <img src="/github/img1.png">
-  <br>Log In
+  <img  width="40%" src="/github/img1.png">
 </p>
 
